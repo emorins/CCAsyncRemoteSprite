@@ -35,6 +35,12 @@
     return [[[self alloc] initwithURLRequest:request placeholderTexture:nil] autorelease];  
 }
 
++ (id)spriteWithURL:(NSURL *)url target:(id)target selector:(SEL)selector
+{
+    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:30];
+    return [[[self alloc] initwithURLRequest:request placeholderTexture:nil target:target selector:selector] autorelease];
+}
+
 + (id)spriteWithURL:(NSURL *)url placeholderTexture:(CCTexture2D *)placeholderTexture
 {
     NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:30];
@@ -48,6 +54,11 @@
 
 - (id)initwithURLRequest:(NSURLRequest *)request placeholderTexture:(CCTexture2D *)placeholderTexture
 {
+    return [self initwithURLRequest:request placeholderTexture:placeholderTexture target:nil selector:nil];
+}
+
+- (id)initwithURLRequest:(NSURLRequest *)request placeholderTexture:(CCTexture2D *)placeholderTexture target:(id)target selector:(SEL)selector
+{
     if( (self = [self init]) )
 	{
         // set texture as placeholderTexture
@@ -60,10 +71,9 @@
         // set texture as the downloaded image
         UIImageView *imageView = [[[UIImageView alloc] init] autorelease];
         [imageView setImageWithURLRequest:request
-                         placeholderImage:nil 
+                         placeholderImage:nil
                                   success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-                                      
-                                      CCTexture2D *t = [[CCTextureCache sharedTextureCache] 
+                                      CCTexture2D *t = [[CCTextureCache sharedTextureCache]
                                                         addCGImage:image.CGImage
                                                         forKey:[request.URL absoluteString]];
                                       
@@ -71,7 +81,8 @@
                                       rect.size = t.contentSize;
                                       [self setTexture:t];
                                       [self setTextureRect: rect];
-                                  } 
+                                      [target performSelector:selector withObject:self];
+                                  }
                                   failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
                                       CCLOG(@"Cannot download image in CCRemoteSprite %@", [error localizedDescription]);
                                   }

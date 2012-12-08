@@ -31,8 +31,10 @@
 @interface CCSprite (CCRemoteSprite)
 
 + (id)spriteWithURL:(NSURL *)url;
++ (id)spriteWithURL:(NSURL *)url target:(id)target selector:(SEL)selector;
 + (id)spriteWithURL:(NSURL *)url placeholderTexture:(CCTexture2D *)placeholderTexture;
 + (id)spriteWithURLRequest:(NSURLRequest *)request placeholderTexture:(CCTexture2D *)placeholderTexture;
 - (id)initwithURLRequest:(NSURLRequest *)request placeholderTexture:(CCTexture2D *)placeholderTexture;
+- (id)initwithURLRequest:(NSURLRequest *)request placeholderTexture:(CCTexture2D *)placeholderTexture target:(id)target selector:(SEL)selector;
 
 @end
